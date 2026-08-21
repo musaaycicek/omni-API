@@ -10,7 +10,7 @@ from pymongo.errors import PyMongoError
 
 from model.models import GDPRecord
 
-mongo_uri: str = "mongodb://localhost:27017"
+mongo_uri = "mongodb://admin:sifreniz@localhost:27017/?authSource=admin"
 db_name: str = "mongoDB_omniAPI"
 
 class IngestionService():
@@ -121,6 +121,31 @@ class IngestionService():
       except PyMongoError as e:
          print(f"{e}")
 
+   @staticmethod
+   async def _get_all_mongoDB(colection_name:str)->list[dict]:
+
+      liste=[]
+      client=MongoClient(mongo_uri)
+
+      db=client[db_name]
+
+      collection=db[colection_name]
+
+      veriler=collection.find()
+
+      for doc in veriler:
+         # id değerini str çevirdik
+         doc["_id"] = str(doc["_id"])
+         liste.append(doc)
+        
+
+      return liste
+         
+
+    
+
+
+
 
       
 
@@ -132,7 +157,9 @@ class IngestionService():
 
       saved_count=await IngestionService._process_and_save_csv(buffer,db)
 
-      mongo_ins= await IngestionService._insert_mongoDB(saved_count)
+      mongo_ins= await IngestionService._insert_mongoDB(saved_count,"gdp_records")
+
+      mongo_get=await IngestionService._get_all_mongoDB("gdp_records")
 
       return mongo_ins
 
