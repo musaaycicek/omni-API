@@ -34,7 +34,7 @@ class Base(DeclarativeBase):
 
 async def init_db():
    async with engine.begin() as conn:
-      await conn.run_sync(Base.metadata.create_all)
+      await conn.run_sync(Base.metadata.create_all(bind=engine))
 
 # FastAPI Dependency (Her isteğe özel asekron DB oturumu açıp kapatır)
 async def get_db()->AsyncGenerator[AsyncSession,None]:
@@ -49,5 +49,5 @@ async def get_db()->AsyncGenerator[AsyncSession,None]:
        finally:
           session.close()
 
-          
+
 
