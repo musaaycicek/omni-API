@@ -16,7 +16,9 @@ router=APIRouter(prefix="/mongoGET",tags=["Mongo GET"])
 )
 
 async def mongoDB_GET(
-   colection_namestr:str = Query("gdp_records", description="Çekilecek MongoDB koleksiyon adı")):
+   colection_namestr:str = Query("gdp_records", description="Çekilecek MongoDB koleksiyon adı")
+    ):
+
     try:
      getDB=await ingetion_service.IngestionService._get_all_mongoDB(colection_namestr)
      return getDB
